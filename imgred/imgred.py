@@ -10,7 +10,7 @@ def parse_arguments():
     # Add arguments
     parser.add_argument("-i", "--input", type=str, required=True, help="Input image file (JPEG/PNG).")
     parser.add_argument("-o", "--output", type=str, required=True, help="Output WebP file.")
-    parser.add_argument("-q", "--quality", type=int, choices=range(1, 101), default=70, help="Quality level (1 to 99).")
+    parser.add_argument("-q", "--quality", type=int, choices=range(1, 101), default=70, help="Quality level (1 to 100).")
     parser.add_argument("-w", "--width", type=int, help="New width for resizing.")
     parser.add_argument("--height", type=int, help="New height for resizing.")
     parser.add_argument("--resize", type=int, help="Resize using percentage.")
@@ -58,7 +58,6 @@ def main():
         # convert image mode to RGB
         input_image = input_image.convert("RGB")
         # create a new blank image with the same size
-        grayscale_image = Image.new("RGB", input_image.size)
         draw = ImageDraw.Draw(input_image) 
 
         for x in range(width):
