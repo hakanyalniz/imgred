@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PIL import Image
+from PIL import Image, ImageDraw
 import argparse
 
 
@@ -14,6 +14,7 @@ def parse_arguments():
     parser.add_argument("-w", "--width", type=int, help="New width for resizing.")
     parser.add_argument("--height", type=int, help="New height for resizing.")
     parser.add_argument("--resize", type=int, help="Resize using percentage.")
+    parser.add_argument("-g", "--grayscale", action="store_true", help="Turn the image into grayscale.")
 
     
     # Parse arguments
@@ -47,9 +48,30 @@ def main():
         new_height = height
         new_width = width
 
+
+    # if the user selects grayscale flag, the below turns true
+    # I have used original height and width here, because since the
+    # resize has yet to happen, if I use the current size on an image yet to be made that size
+    # it will instead only cover a part of the image
+    # another solution is to move resized_image above and give draw that, but for now I will use this solution
+    if (args.grayscale):
+        # convert image mode to RGB
+        input_image = input_image.convert("RGB")
+        # create a new blank image with the same size
+        grayscale_image = Image.new("RGB", input_image.size)
+        draw = ImageDraw.Draw(input_image) 
+
+        for x in range(width):
+            for y in range(height):
+                r, g, b = input_image.getpixel((x, y))
+                # Calculate the grayscale value using the average method
+                gray = int((r + g + b) / 3)
+                draw.point((x, y), (gray, gray, gray))
+
+    
     # Resize the image
     resized_image = input_image.resize((new_width, new_height), Image.LANCZOS)
-    
+
     # Save the resized image as WebP
     resized_image.save(args.output, "WEBP", quality=webp_quality)
     print(f"Image saved as {args.output} with quality {args.quality} and size {new_width}x{new_height}")
